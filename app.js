@@ -3,6 +3,7 @@ let debugMode;
 let accounts;
 let restartBots = false;
 let webservice;
+let page;
 let launchOptions = {
     defaultViewport: null,
     timeout: 60000,
@@ -68,7 +69,7 @@ async function startBot(email) {
 
 //* Browser Functions
 async function pageLogin(browser, email){
-    let page = null;
+    page = null;
     let dropPromise = false;
     try {
         const timeoutPromise = new Promise((resolve, reject) => {
@@ -110,7 +111,7 @@ async function pageLogin(browser, email){
         log(('Error occurred while logging in: '+ stackTrace), email, "error");
     } finally {
         if(page){
-            await page.close();
+            //await page.close();
         }
     }
 }
@@ -184,32 +185,34 @@ async function autoAction(browser, email){
 
 //* Actions
 async function newPost(browser, email, text = null, img = null){
-    let page = null;
+    //let page = null;
     let dropPromise = false;
     try {
         if(!(text || img)) {
             throw new Error('no text or image specified');
         }
 
-        const timeoutPromise = new Promise((resolve, reject) => {
-            setTimeout(async () => {
-                if(!dropPromise){
+        if(page.url() != 'https://beta.out.app/dashboard/home/'){
+            const timeoutPromise = new Promise((resolve, reject) => {
+                setTimeout(async () => {
+                    if(!dropPromise){
+                        dropPromise = true;
+                        reject(new Error('Function execution timed out (newPage took longer than 3 minutes)'));
+                        //if(browser.isConnected()) await browser.close();
+                        restartBots = true;
+                    }
+                }, timeoutTimer);
+            });
+            const postPromise = (async () => {
+                while(!dropPromise){
+                    page = await browser.newPage()
+                    await pageSettings(page)
+                    await page.goto('https://beta.out.app/dashboard/home/');
                     dropPromise = true;
-                    reject(new Error('Function execution timed out (newPage took longer than 3 minutes)'));
-                    //if(browser.isConnected()) await browser.close();
-                    restartBots = true;
                 }
-            }, timeoutTimer);
-        });
-        const postPromise = (async () => {
-            while(!dropPromise){
-                page = await browser.newPage()
-                await pageSettings(page)
-                await page.goto('https://beta.out.app/dashboard/home/');
-                dropPromise = true;
-            }
-        })();
-        await Promise.race([timeoutPromise, postPromise]);
+            })();
+            await Promise.race([timeoutPromise, postPromise]);
+        }
             
 
         if(text){
@@ -250,28 +253,30 @@ async function newPost(browser, email, text = null, img = null){
 }
 
 async function rePost(browser, email){
-    let page = null;
+    // let page = null;
     let dropPromise = false;
     try {
-        const timeoutPromise = new Promise((resolve, reject) => {
-            setTimeout(async () => {
-                if(!dropPromise){
+        if(page.url() != 'https://beta.out.app/dashboard/home/'){
+            const timeoutPromise = new Promise((resolve, reject) => {
+                setTimeout(async () => {
+                    if(!dropPromise){
+                        dropPromise = true;
+                        reject(new Error('Function execution timed out (rePost took longer than 3 minutes)'));
+                        //if(browser.isConnected()) await browser.close();
+                        restartBots = true;
+                    }
+                }, timeoutTimer);
+            });
+            const postPromise = (async () => {
+                while(!dropPromise){
+                    page = await browser.newPage()
+                    await pageSettings(page)
+                    await page.goto('https://beta.out.app/dashboard/home/');
                     dropPromise = true;
-                    reject(new Error('Function execution timed out (rePost took longer than 3 minutes)'));
-                    //if(browser.isConnected()) await browser.close();
-                    restartBots = true;
                 }
-            }, timeoutTimer);
-        });
-        const postPromise = (async () => {
-            while(!dropPromise){
-                page = await browser.newPage()
-                await pageSettings(page)
-                await page.goto('https://beta.out.app/dashboard/home/');
-                dropPromise = true;
-            }
-        })();
-        await Promise.race([timeoutPromise, postPromise]);
+            })();
+            await Promise.race([timeoutPromise, postPromise]);
+        }
 
 
         await page.waitForSelector('.flex.items-start.gap-4.pt-3', { visible: true, timeout: 60000 });
@@ -309,29 +314,30 @@ async function rePost(browser, email){
 }
 
 async function likePost(browser, email){
-    let page = null;
+    // let page = null;
     let dropPromise = false;
     try {
-
-        const timeoutPromise = new Promise((resolve, reject) => {
-            setTimeout(async () => {
-                if(!dropPromise){
+        if(page.url() != 'https://beta.out.app/dashboard/home/'){
+            const timeoutPromise = new Promise((resolve, reject) => {
+                setTimeout(async () => {
+                    if(!dropPromise){
+                        dropPromise = true;
+                        reject(new Error('Function execution timed out (likePost took longer than 3 minutes)'));
+                        //if(browser.isConnected()) await browser.close();
+                        restartBots = true;
+                    }
+                }, timeoutTimer);
+            });
+            const postPromise = (async () => {
+                while(!dropPromise){
+                    page = await browser.newPage()
+                    await pageSettings(page)
+                    await page.goto('https://beta.out.app/dashboard/home/');
                     dropPromise = true;
-                    reject(new Error('Function execution timed out (likePost took longer than 3 minutes)'));
-                    //if(browser.isConnected()) await browser.close();
-                    restartBots = true;
                 }
-            }, timeoutTimer);
-        });
-        const postPromise = (async () => {
-            while(!dropPromise){
-                page = await browser.newPage()
-                await pageSettings(page)
-                await page.goto('https://beta.out.app/dashboard/home/');
-                dropPromise = true;
-            }
-        })();
-        await Promise.race([timeoutPromise, postPromise]);
+            })();
+            await Promise.race([timeoutPromise, postPromise]);
+        }
 
 
         await page.waitForSelector('.flex.items-start.gap-4.pt-3', { visible: true, timeout: 60000 });
