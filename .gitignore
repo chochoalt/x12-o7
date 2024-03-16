@@ -1,0 +1,69 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# macOS
+.DS_Store
+
+# Editor directories
+.vscode/
+.idea/
+
+# Dependency directories
+bower_components/
+jspm_packages/
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# API keys and credentials
+.env.test
+.env.development
+.env.production
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.log
+*.min.js
+*.min.css
+
+# Node.js installer cache
+/.npm
+
+# Grunt intermediate storage (https://www.gitignore.io/api/node)
+.grunt
+/node_modules
+
+# Compiled TypeScript
+*.tsbuildinfo
+
+# Compiled Python
+__pycache__/
+*.pyc
+
+# Logs
+logs/
+*.log
+
+# Test coverage
+coverage/
+
+# Jupyter Notebook
+.ipynb_checkpoints
