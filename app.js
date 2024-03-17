@@ -149,21 +149,22 @@ async function autoAction(browser, email){
         const result = randomAction(email);
         switch (result) {
             case 'newPost':
-                let postText 
-                if(accounts.get(email).get('postText') == true){
-                    postText = await randomLineFromTextFile(email)
+                log("posting is currently not enabled for webservices", email)
+                // let postText 
+                // if(accounts.get(email).get('postText') == true){
+                //     postText = await randomLineFromTextFile(email)
                     
-                    log(("posting text: "+ postText), email)
-                }
+                //     log(("posting text: "+ postText), email)
+                // }
 
-                let img;
-                if(accounts.get(email).get('postImages') == true){
-                    img = await randomImageFromFolder(email);
+                // let img;
+                // if(accounts.get(email).get('postImages') == true){
+                //     img = await randomImageFromFolder(email);
 
-                    log(("posting image: "+ postText), email)
-                }
+                //     log(("posting image: "+ postText), email)
+                // }
 
-                await newPost(browser, email, postText, img);
+                // await newPost(browser, email, postText, img);
                 break;
             case 'rePost':
                 log("reposting", email)
@@ -192,7 +193,8 @@ async function newPost(browser, email, text = null, img = null){
             throw new Error('no text or image specified');
         }
 
-        if(page.url() != 'https://beta.out.app/dashboard/home/'){
+        if(page.url() != 'https://beta.out.app/dashboard/home/?filter=following'){
+            log("opening new page", email)
             const timeoutPromise = new Promise((resolve, reject) => {
                 setTimeout(async () => {
                     if(!dropPromise){
@@ -256,7 +258,8 @@ async function rePost(browser, email){
     // let page = null;
     let dropPromise = false;
     try {
-        if(page.url() != 'https://beta.out.app/dashboard/home/'){
+        if(page.url() != 'https://beta.out.app/dashboard/home/?filter=following'){
+            log("opening new page", email)
             const timeoutPromise = new Promise((resolve, reject) => {
                 setTimeout(async () => {
                     if(!dropPromise){
@@ -317,7 +320,8 @@ async function likePost(browser, email){
     // let page = null;
     let dropPromise = false;
     try {
-        if(page.url() != 'https://beta.out.app/dashboard/home/'){
+        if(page.url() != 'https://beta.out.app/dashboard/home/?filter=following'){
+            log("opening new page", email)
             const timeoutPromise = new Promise((resolve, reject) => {
                 setTimeout(async () => {
                     if(!dropPromise){

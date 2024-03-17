@@ -49,27 +49,3 @@ app.post("/bot" , async (req, res) => {
 app.listen(PORT, () => {
     log(`listening on port ${PORT}`)
 })
-
-
-
-function createAccountsMap() {
-    let jsonObject = {};
-    jsonObject[EMAIL] = {
-            "password": PASSWORD,
-            "fileName": "",
-            "doActionCycle":false,
-            "actionWeight":{
-                "newPost":0,
-                "rePost":REPOST,
-                "likePost":LIKEPOST
-            },
-            "postText":false,
-            "deleteTextLines":false,
-            "postImages":false,
-            "deleteImageFiles":false,
-            "waitMin": 0,
-            "waitMax": 0
-        }
-
-    return jsonToMap(jsonObject);
-}
