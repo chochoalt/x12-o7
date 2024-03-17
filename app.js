@@ -104,7 +104,7 @@ async function pageLogin(browser, email){
 
         log("login successfull", email, "")
 
-        await waitForTimeout(4000);
+        await waitForTimeout(10000);
 
     } catch (error) {
         const stackTrace = error + "\n" + error.stack
@@ -112,6 +112,7 @@ async function pageLogin(browser, email){
     } finally {
         if(page){
             //await page.close();
+            console.log(page.url())
         }
     }
 }
@@ -258,6 +259,7 @@ async function rePost(browser, email){
     // let page = null;
     let dropPromise = false;
     try {
+        console.log(page.url() != 'https://beta.out.app/dashboard/home/?filter=following')
         if(page.url() != 'https://beta.out.app/dashboard/home/?filter=following'){
             log("opening new page", email)
             const timeoutPromise = new Promise((resolve, reject) => {
@@ -320,6 +322,7 @@ async function likePost(browser, email){
     // let page = null;
     let dropPromise = false;
     try {
+        console.log(page.url() != 'https://beta.out.app/dashboard/home/?filter=following')
         if(page.url() != 'https://beta.out.app/dashboard/home/?filter=following'){
             log("opening new page", email)
             const timeoutPromise = new Promise((resolve, reject) => {
