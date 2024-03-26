@@ -18,6 +18,12 @@ const defaultViewport = {
 let waitUntilLoading = {timeout: 60000};
 const timeoutTimer = 180000;
 
+const postingbarElements = '.flex.gap-5.justify-between.items-center.mt-2.w-xs.overflow-x-scroll.no-scrollbar.whitespace-nowrap.w-full' //parent of 
+const loginEmailElement = 'input[type="text"]';
+const loginPasswordElement = 'input[type="password"]';
+const loginSubmit = 'button[type="submit"]';
+
+
 
 //* setup dependencies
 const path = require('path');
@@ -92,15 +98,15 @@ async function pageLogin(browser, email){
         })();
         await Promise.race([timeoutPromise, postPromise])
 
-        await page.waitForSelector('#email', { visible: true, timeout: 60000 });
-        await page.type('#email', email);
+        await page.waitForSelector(loginEmailElement, { visible: true, timeout: 60000 });
+        await page.type(loginEmailElement, email);
 
-        await page.waitForSelector('#input-group-1', { visible: true, timeout: 20000 });
-        await page.type('#input-group-1', accounts.get(email).get('password'));
+        await page.waitForSelector(loginPasswordElement, { visible: true, timeout: 20000 });
+        await page.type(loginPasswordElement, accounts.get(email).get('password'));
             
 
-        await page.waitForSelector('button[type="submit"]', { visible: true, timeout: 20000 });
-        await page.click('button[type="submit"]');
+        await page.waitForSelector(loginSubmit, { visible: true, timeout: 20000 });
+        await page.click(loginSubmit);
 
         log("login successfull", email, "")
 
@@ -259,7 +265,6 @@ async function rePost(browser, email){
     // let page = null;
     let dropPromise = false;
     try {
-        console.log(page.url() != 'https://beta.out.app/dashboard/home/?filter=following')
         if(page.url() != 'https://beta.out.app/dashboard/home/?filter=following'){
             log("opening new page", email)
             const timeoutPromise = new Promise((resolve, reject) => {
@@ -284,23 +289,30 @@ async function rePost(browser, email){
         }
 
 
-        await page.waitForSelector('.flex.items-start.gap-4.pt-3', { visible: true, timeout: 60000 });
-        const elements = await page.$$('.flex.items-start.gap-4.pt-3');
+        await page.waitForSelector(postingbarElements, { visible: true, timeout: 60000 });
+        const elements = await page.$$(postingbarElements);
+
+        
 
         await waitForTimeout(1000)
 
         if(elements.length > 0){
+
             const thirdChild = await elements[0].$(':nth-child(3)');
             if(thirdChild){
                 await thirdChild.click();
         
                 if (!debugMode) {
                     await page.evaluate(async () => {
-                        const repostButton = await document.querySelector('.repost-dot-menu');
+                        const repostButton = await document.querySelector('button.bg-outprimary-base.hover\\:bg-outprimary-light.text-outext-opposite.px-4.py-2.rounded-xl.shadow-sm.transition.duration-00.ease-in-out');
+                        
                         if (repostButton){
                             await repostButton.click();
                             await new Promise(resolve => setTimeout(resolve, 2000));
-                        } else throw new Error('repost button not found');
+                        } else {
+                            console.log("debugger: no repo btn")
+                            throw new Error('repost button not found');
+                        }
                     });
                 }
             } else throw new Error('repost menu not found');
@@ -322,7 +334,6 @@ async function likePost(browser, email){
     // let page = null;
     let dropPromise = false;
     try {
-        console.log(page.url() != 'https://beta.out.app/dashboard/home/?filter=following')
         if(page.url() != 'https://beta.out.app/dashboard/home/?filter=following'){
             log("opening new page", email)
             const timeoutPromise = new Promise((resolve, reject) => {
@@ -347,20 +358,24 @@ async function likePost(browser, email){
         }
 
 
-        await page.waitForSelector('.flex.items-start.gap-4.pt-3', { visible: true, timeout: 60000 });
-        const elements = await page.$$('.flex.items-start.gap-4.pt-3');
+        await page.waitForSelector(postingbarElements, { visible: true, timeout: 60000 });
+        const elements = await page.$$(postingbarElements);
 
         await waitForTimeout(1000)
 
         if(elements.length > 0){
             if (!debugMode) {
                 const element = elements[0]
+
                 await page.evaluate(async (element) => {
                     const likeButton = await element.querySelector(':nth-child(1)');
                     if (likeButton) {
                         await likeButton.click();
                         await new Promise(resolve => setTimeout(resolve, 2000));
-                    } else throw new Error('like button not found');
+                    } else {
+                        console.log("debugger: no like button")
+                        throw new Error('like button not found');
+                    }
                 }, element);
             }
         } else throw new Error('no posts found');

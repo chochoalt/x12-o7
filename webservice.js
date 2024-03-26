@@ -32,7 +32,7 @@ app.post("/bot" , async (req, res) => {
         const debugMode = account["debugMode"];
 
         // bot actions
-        log("set settings", email)
+        if(debugMode){log("set settings", email)}
         setSettings(debugMode, account, true)
 
         log("starting bot...", email)
