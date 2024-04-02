@@ -18,7 +18,7 @@ const defaultViewport = {
 let waitUntilLoading = {timeout: 60000};
 const timeoutTimer = 180000;
 
-const postingbarElements = '.flex.gap-5.justify-between.items-center.mt-2.w-xs.overflow-x-scroll.no-scrollbar.whitespace-nowrap.w-full' //parent of 
+const postingbarElements = process.env.POSTINGBAR_ELEMENTS || '.flex.gap-5.justify-between.items-center.w-xs.overflow-x-scroll.no-scrollbar.whitespace-nowrap.w-full.flex-wrap' //parent of 
 const loginEmailElement = 'input[type="text"]';
 const loginPasswordElement = 'input[type="password"]';
 const loginSubmit = 'button[type="submit"]';

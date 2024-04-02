@@ -24,7 +24,7 @@ app.get("/ping" , (req, res) => {
 
 app.post("/bot" , async (req, res) => {
     try {
-        console.log('Received data:', req.body);
+        //console.log('Received data:', req.body);
 
         let account = jsonToMap(req.body);
         if(!(account instanceof Map)) throw new Error('error with account map');
