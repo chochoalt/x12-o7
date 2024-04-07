@@ -22,7 +22,7 @@ const postingbarElements = process.env.POSTINGBAR_ELEMENTS || '.flex.gap-5.justi
 const loginEmailElement = 'input[type="text"]';
 const loginPasswordElement = 'input[type="password"]';
 const loginSubmit = 'button[type="submit"]';
-
+const followingOrTrendingParentElement = 'body > main > div > div.min-h-screen.h-screen.overflow-hidden.flex.flex-col > div > div.flex-1.w-full.scroller > div.grid.h-screen.overflow-y-auto.no-scrollbar > div > header.hidden.md\\:flex.gap-2.justify-between.p-4.whitespace-nowrap.border-b.border-solid.bg-outbackground-main.border-b-outstroke-soft.max-md\\:flex-wrap.max-md\\:max-w-full > div.flex.gap-2.justify-end.my-auto.text-sm.font-medium.tracking-normal.leading-5.text-center > div.flex.gap-2.justify-between.p-2\\.5.rounded-xl.shadow-sm.bg-transparent.hover\\:bg-outbackground-weak.transition.duration-300.ease-in-out.border.border-outstroke-soft.text-outext-sub.cursor-pointer';
 
 
 //* setup dependencies
@@ -190,6 +190,33 @@ async function autoAction(browser, email){
     }
 }
 
+//check if we are on the following or trending page, then change it to the following posts
+async function switchToFollowingPage(page, email) {
+    try {
+        await page.waitForSelector(followingOrTrendingParentElement, { timeout: 30000 }); // Waiting for the selector for up to 30 seconds
+        const secondChildElement = await page.$(`${followingOrTrendingParentElement} > *:nth-child(2)`);
+
+        if (!secondChildElement) {
+            console.log("Second child element not found.");
+            return;
+        }
+
+        const innerHTMLContainsFollowing = await page.evaluate(el => el.innerHTML.includes('Following'), secondChildElement);
+        const innerHTMLContainsTrending = await page.evaluate(el => el.innerHTML.includes('Trending'), secondChildElement);
+
+        if (debugMode) {
+            log(("Element includes 'Following': " + innerHTMLContainsFollowing + " and " + innerHTMLContainsTrending), email);
+        }
+
+        if (innerHTMLContainsFollowing) {
+            await secondChildElement.click();
+            log('switched mode in switchToFollowingPage()', email);
+        }
+    } catch (error) {
+        log(error, email, "error");
+    }
+}
+
 
 //* Actions
 async function newPost(browser, email, text = null, img = null){
@@ -288,6 +315,8 @@ async function rePost(browser, email){
             await Promise.race([timeoutPromise, postPromise]);
         }
 
+        await switchToFollowingPage(page)
+
 
         await page.waitForSelector(postingbarElements, { visible: true, timeout: 60000 });
         const elements = await page.$$(postingbarElements);
@@ -356,6 +385,8 @@ async function likePost(browser, email){
             })();
             await Promise.race([timeoutPromise, postPromise]);
         }
+
+        await switchToFollowingPage(page)
 
 
         await page.waitForSelector(postingbarElements, { visible: true, timeout: 60000 });
